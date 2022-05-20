@@ -1,39 +1,20 @@
 library(R.utils)
 library(purrr)
 library(dvcr)
-library(utils)
-library(tools)
 library(vroom)
 library(arrow)
-library(vroom)
 library(tibble)
-library(data.table)
-library(arrow, warn.conflicts = TRUE)
-library(XML)
 library(dplyr)
-library(readr)
-library(ontologyIndex)
-library(httr)
-library(jsonlite)
-library(rvest)
 library(here)
 source(here::here("R/chrome.R"))
-library(httr)
 library(stringr)
 library(tidyverse)
 library(dplyr)
 library(fs)
 library(purrr)
-library(rvest)
-library(htmlTable)  
-library(arsenal)    
-library(jsonlite)
-library(RWDataPlyr)
-library("XML")
-library("rdflib")
-library("jsonld")
-library("SPARQL")
+library(rdflib)
 library(tidyr)
+library(readr)
 
 download_dir <- "download"
 data_dir <- "data"
@@ -67,11 +48,35 @@ owlFileList=list.files(download_dir, pattern = 'owl', full.names = TRUE)
 sapply(owlFileList, parse_triples)
 
 
-## Process GO Annotation data
+##----------Process GO Annotation data
+sapply(list.files('download', pattern = ".gz",full.names = TRUE), gunzip)
+gafFiles=list.files("download", pattern = ".gaf", full.names = TRUE)
 colNamesAnnotations<-c("DB","DB Object ID","DB Object Symbol","Qualifier","GO ID","DB:Reference","Evidence Code", "With or From","Aspect","DB Object Name","DB Object Synonym","DB Object Type","DB Object Synonym","Taxon","Date","Assigned By","Annotation Extension","Gene Product Form ID")
+read_go_annotations<-function(x) {read_tsv(x, comment = '!', col_names = colNamesAnnotations) |> mutate(filename=basename(x))}
+writeParquetDf<-function(inputFile){
+  tmpDf<-read_go_annotations(inputFile)
+  arrow::write_parquet(tmpDf, file.path(data_dir,paste0(basename(inputFile),".parquet")))
+  rm(tmpDf)
+}
+combineParquet<-function(inputFileList, outputFileName){
+  inputListEdit=sapply(inputFileList, list)
+  tmpDf<-data.table::rbindlist(lapply(inputListEdit, arrow::read_parquet), fill = TRUE)
+  arrow::write_parquet(tmpDf, outputFileName)
+  rm(tmpDf)
+  lapply(inputListEdit, file.remove)
+}  
 
+sapply(gafFiles, writeParquetDf)
+gafFileList=list.files('data', pattern = 'gaf.parquet', full.names = TRUE)
+combineParquet(gafFileList,'data/goa_human_combined.parquet')
 
-
-
+##----------Process GO CAM ttl data
+fileTarget=list.files('download', pattern = 'zip',full.names = TRUE)
+unzip(fileTarget,exdir=download_dir)
+GOCamsFile="download/GO-CAMs.ttl"
+GOCamsOutput=paste0(GOCamsFile,".nt")
+rdfInfo=rdflib::rdf_parse(GOCamsFile,format = 'turtle')
+rdf_serialize(rdfInfo,GOCamsOutput ,format = "ntriples")
+parse_triples(GOCamsOutput)
 
 
