@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+/data
+/download
+GeneOntology.Rproj
+.dvc
+.DS_Store 
