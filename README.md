@@ -1,5 +1,16 @@
 ## Description
 
+--- 
+title: Gene Ontology (GO) 
+namespace: Gene Ontology (GO)  
+description: The Gene Ontology resource provides a computational representation of our current scientific knowledge about the functions of genes
+dependencies: 
+  - name: Gene Ontology (GO) download 
+    url: http://geneontology.org/docs/downloads/
+---
+
+
+
 ### Gene Ontology (GO)
 
 http://geneontology.org/docs/download-ontology/#go_obo_and_owl
