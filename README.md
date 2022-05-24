@@ -50,13 +50,14 @@ GAF data has the following format and includes Human Genetic GO annotation info.
 ### GO CAMS data
 ```data/GO-CAMs.ttl.nt_ntriples.parquet```
 https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip
-GO CAMs annotation data is downloaded in RDF Turtle format. The data is then serialized, processed and converted to parquet format. 
+gocam documentation: http://geneontology.org/docs/gocam-overview/
+GO CAMs annotation data is downloaded in RDF Turtle format. GO-CAM combines different GO annotations to produce a network of annotations ("model") to better understand biological function. The data is then serialized, processed and converted to parquet format. 
  
  ### GO External Data Links
  ```data/go_external_combined.parquet```
  http://current.geneontology.org/ontology/external2go/
  
- This dataset includes the columns External database ID, GO description for the term, and the corresponding GO ID, and a column containing the original file name. 
+ This dataset maps GO information to external databases based on IDs. Example databases that are mapped to GO terms include kegg, pfam and uniprot. This dataset includes the columns External database ID, GO description for the term, the corresponding GO ID, and a column containing the original file name. 
  
  **Columns**
  * ExternalID

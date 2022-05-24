@@ -6,7 +6,6 @@ library(arrow)
 library(tibble)
 library(dplyr)
 library(here)
-#source(here::here("R/chrome.R"))
 library(stringr)
 library(tidyverse)
 library(dplyr)
@@ -68,7 +67,7 @@ sapply(gafFiles, function(x) writeParquetDf(x,read_go_annotations))
 gafFileList=list.files('data', pattern = 'gaf.parquet', full.names = TRUE)
 combineParquet(gafFileList,'data/goa_human_combined.parquet')
 
-####----------Process GO external link files
+##----------Process GO external link files
 goExtFiles=list.files("download/current.geneontology.org", pattern = "2go", full.names = TRUE)
 read_go_ext<-function(x) {read_tsv(x, comment = '!', col_names = "Info") |> separate(Info,into = c("ExternalID","GODescription","GOID"), c('>|;')) |> mutate(ExternalID=trimws(ExternalID),GODescription=trimws(GODescription),GOID=trimws(GOID)) |> mutate(filename=basename(x))}
 sapply(goExtFiles, function(x) writeParquetDf(x,read_go_ext))
@@ -83,4 +82,3 @@ GOCamsOutput=paste0(GOCamsFile,".nt")
 rdfInfo=rdflib::rdf_parse(GOCamsFile,format = 'turtle')
 rdf_serialize(rdfInfo,GOCamsOutput ,format = "ntriples")
 parse_triples(GOCamsOutput)
-
