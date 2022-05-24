@@ -9,21 +9,23 @@ http://geneontology.org/docs/download-ontology/#go_obo_and_owl
  - The n-triples format is tabular and follows the format```<subject> <predicate> <object>```. In addition, literals (text strings) are found in front of the object. These are incorporated into the parquet output data with three following column headers.  
 	* Subject
 	* Predicate
-	* Object 
+	* Object  (literals are included in the object column)
 
 ### GO ( Gene Ontology ) data 
 ```data/go.owl_ntriples.parquet```
 Data represents Gene Ontology data. Consists of different classes and considers the Molecular Function, Cellular Component and the biological process. GO classes are composed of a definition, a label, a unique identifier, and several other elements.  [Elements of GO terms are described here](http://geneontology.org/docs/ontology/).
 
 ##### GO Documentation
-http://geneontology.org/docs/ontology-documentation/
+Additional documentation on GO (Gene Ontology) data is provided herehttp://geneontology.org/docs/ontology-documentation/
 
-### GO plus data 
+### GO (Gene Ontology) plus data 
 ```data/go-plus.owl_ntriples.parquet```
-The GO-Plus data set includes cross-ontology relationships (axioms) and imports additional required ontologies including [ChEBI](https://www.ebi.ac.uk/chebi/), [Cell Ontology](http://www.obofoundry.org/ontology/cl.html) and [Uberon](http://uberon.github.io/). It also includes a complete set of relationship types including some not in go.owl. 
+The GO-Plus data set includes cross-ontology relationships (axioms) and imports additional required ontologies including [ChEBI](https://www.ebi.ac.uk/chebi/), [Cell Ontology](http://www.obofoundry.org/ontology/cl.html) and [Uberon](http://uberon.github.io/). It also includes a complete set of relationship types including some not in the ```data/go.owl_ntriples.parquet``` file . 
 
 ### GO Annotation data, GAF (GO Annotation Format) )
+```data/goa_human_combined.parquet```
 http://geneontology.org/docs/go-annotation-file-gaf-format-2.2/
+GAF data has the following format and includes Human Genetic GO annotation info. 
 |GO Annotation Column Headers  | 
 |---|
 |  DB|
@@ -46,6 +48,19 @@ http://geneontology.org/docs/go-annotation-file-gaf-format-2.2/
 |  Gene Product Form ID|
 
 ### GO CAMS data
+```data/GO-CAMs.ttl.nt_ntriples.parquet```
 https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip
 GO CAMs annotation data is downloaded in RDF Turtle format. The data is then serialized, processed and converted to parquet format. 
+ 
+ ### GO External Data Links
+ ```data/go_external_combined.parquet```
+ http://current.geneontology.org/ontology/external2go/
+ 
+ This dataset includes the columns External database ID, GO description for the term, and the corresponding GO ID, and a column containing the original file name. 
+ 
+ **Columns**
+ * ExternalID
+ * GODescription 
+ * GOID
+ * filename
  

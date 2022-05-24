@@ -6,4 +6,5 @@
 /download
 GeneOntology.Rproj
 .dvc
-.DS_Store 
+.DS_Store
+.RDataTmp 

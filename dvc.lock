@@ -1,12 +1,16 @@
 schema: '2.0'
 stages:
   download:
-    cmd: Rscript R/download.R
+    cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 http://current.geneontology.org/
+      --restrict-file-names=windows --convert-links -P download --cut-dirs=3; wget
+      http://current.geneontology.org/ontology/extensions/go-plus.owl https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip
+      -P download;wget -H -r --no-parent -A "*go" http://current.geneontology.org/ontology/external2go/
+      --cut-dirs=2 -P download;
     outs:
     - path: download/
-      md5: 34bc249dc40313edd9194cfc2c393c3d.dir
-      size: 378455262
-      nfiles: 7
+      md5: 0c43b294e8a265dd68b8371685a9b33a.dir
+      size: 387304699
+      nfiles: 30
   process:
     cmd: Rscript R/build.R
     outs:
@@ -14,3 +18,10 @@ stages:
       md5: ba90059c4099c4b587abd58835ccc872.dir
       size: 115308321
       nfiles: 4
+  build:
+    cmd: Rscript R/build.R
+    outs:
+    - path: data/
+      md5: 743399ce5dd0ee39d2017e11aa59e680.dir
+      size: 115387174
+      nfiles: 5

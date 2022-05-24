@@ -6,7 +6,7 @@ library(arrow)
 library(tibble)
 library(dplyr)
 library(here)
-source(here::here("R/chrome.R"))
+#source(here::here("R/chrome.R"))
 library(stringr)
 library(tidyverse)
 library(dplyr)
@@ -43,18 +43,17 @@ parse_triples<-function(inputRdfFile){
   arrow::write_parquet(df_combined_triples,output_file)
   file.remove(tmp_file)}
   else {print(paste0("File Exists:", output_file))}
-  }
-owlFileList=list.files(download_dir, pattern = 'owl', full.names = TRUE)
+}
+owlFileList=c(list.files(download_dir, pattern = 'owl', full.names = TRUE),list.files(file.path(download_dir,"current.geneontology.org"), pattern = 'owl', full.names = TRUE))
 sapply(owlFileList, parse_triples)
 
-
 ##----------Process GO Annotation data
-sapply(list.files('download', pattern = ".gz",full.names = TRUE), gunzip)
-gafFiles=list.files("download", pattern = ".gaf", full.names = TRUE)
+sapply(list.files('download/current.geneontology.org', pattern = ".gz",full.names = TRUE), gunzip)
+gafFiles=list.files("download/current.geneontology.org", pattern = ".gaf", full.names = TRUE)
 colNamesAnnotations<-c("DB","DB Object ID","DB Object Symbol","Qualifier","GO ID","DB:Reference","Evidence Code", "With or From","Aspect","DB Object Name","DB Object Synonym","DB Object Type","DB Object Synonym","Taxon","Date","Assigned By","Annotation Extension","Gene Product Form ID")
 read_go_annotations<-function(x) {read_tsv(x, comment = '!', col_names = colNamesAnnotations) |> mutate(filename=basename(x))}
-writeParquetDf<-function(inputFile){
-  tmpDf<-read_go_annotations(inputFile)
+writeParquetDf<-function(inputFile, read_func){
+  tmpDf<-read_func(inputFile)
   arrow::write_parquet(tmpDf, file.path(data_dir,paste0(basename(inputFile),".parquet")))
   rm(tmpDf)
 }
@@ -65,10 +64,16 @@ combineParquet<-function(inputFileList, outputFileName){
   rm(tmpDf)
   lapply(inputListEdit, file.remove)
 }  
-
-sapply(gafFiles, writeParquetDf)
+sapply(gafFiles, function(x) writeParquetDf(x,read_go_annotations))
 gafFileList=list.files('data', pattern = 'gaf.parquet', full.names = TRUE)
 combineParquet(gafFileList,'data/goa_human_combined.parquet')
+
+####----------Process GO external link files
+goExtFiles=list.files("download/current.geneontology.org", pattern = "2go", full.names = TRUE)
+read_go_ext<-function(x) {read_tsv(x, comment = '!', col_names = "Info") |> separate(Info,into = c("ExternalID","GODescription","GOID"), c('>|;')) |> mutate(ExternalID=trimws(ExternalID),GODescription=trimws(GODescription),GOID=trimws(GOID)) |> mutate(filename=basename(x))}
+sapply(goExtFiles, function(x) writeParquetDf(x,read_go_ext))
+goExtFilesList=list.files(data_dir, pattern = '2go.parquet', full.names = TRUE)
+combineParquet(goExtFilesList,'data/go_external_combined.parquet')
 
 ##----------Process GO CAM ttl data
 fileTarget=list.files('download', pattern = 'zip',full.names = TRUE)
@@ -78,5 +83,4 @@ GOCamsOutput=paste0(GOCamsFile,".nt")
 rdfInfo=rdflib::rdf_parse(GOCamsFile,format = 'turtle')
 rdf_serialize(rdfInfo,GOCamsOutput ,format = "ntriples")
 parse_triples(GOCamsOutput)
-
 

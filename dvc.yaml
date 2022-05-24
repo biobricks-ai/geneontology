@@ -1,9 +1,9 @@
 stages:
   download:
-    cmd: Rscript R/download.R
+    cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 http://current.geneontology.org/ --restrict-file-names=windows --convert-links -P download --cut-dirs=3; wget http://current.geneontology.org/ontology/extensions/go-plus.owl https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip -P download;wget -H -r --no-parent -A "*go" http://current.geneontology.org/ontology/external2go/ --cut-dirs=2 -P download;
     outs:
       - download/
-  process:
+  build:
     cmd: Rscript R/build.R
     outs:
       - data/
