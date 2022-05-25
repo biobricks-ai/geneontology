@@ -1,5 +1,3 @@
-## Description
-
 --- 
 title: Gene Ontology (GO) 
 namespace: Gene Ontology (GO)  
@@ -9,7 +7,7 @@ dependencies:
     url: http://geneontology.org/docs/downloads/
 ---
 
-
+<a href="https://github.com/biobricks-ai/GeneOntology/actions"><img src="https://github.com/biobricks-ai/GeneOntology/actions/workflows/bricktools-check.yaml/badge.svg?branch=main"/></a>
 
 ### Gene Ontology (GO)
 
