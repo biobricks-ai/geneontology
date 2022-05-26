@@ -6,4 +6,5 @@
 /download
 GeneOntology.Rproj
 .DS_Store
-.RDataTmp 
+.RDataTmp
+wget-log 
