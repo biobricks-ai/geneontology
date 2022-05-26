@@ -22,6 +22,6 @@ stages:
     cmd: Rscript R/build.R
     outs:
     - path: data/
-      md5: 0cae00cb736e4cc5a822ccb259d0dd42.dir
-      size: 115359562
+      md5: 11d4d9bb2658d4964181fe8d271a2e32.dir
+      size: 115372502
       nfiles: 5
