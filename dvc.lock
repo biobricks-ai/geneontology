@@ -1,5 +1,13 @@
+---
 schema: '2.0'
 stages:
+  build:
+    cmd: Rscript R/build.R
+    outs:
+    - md5: 11d4d9bb2658d4964181fe8d271a2e32.dir
+      nfiles: 5
+      path: data/
+      size: 115372502
   download:
     cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 http://current.geneontology.org/
       --restrict-file-names=windows --convert-links -P download --cut-dirs=3; wget
@@ -7,21 +15,7 @@ stages:
       -P download;wget -H -r --no-parent -A "*go" http://current.geneontology.org/ontology/external2go/
       --cut-dirs=2 -P download;
     outs:
-    - path: download/
-      md5: 0c43b294e8a265dd68b8371685a9b33a.dir
-      size: 387304699
+    - md5: 0c43b294e8a265dd68b8371685a9b33a.dir
       nfiles: 30
-  process:
-    cmd: Rscript R/build.R
-    outs:
-    - path: data/
-      md5: ba90059c4099c4b587abd58835ccc872.dir
-      size: 115308321
-      nfiles: 4
-  build:
-    cmd: Rscript R/build.R
-    outs:
-    - path: data/
-      md5: 11d4d9bb2658d4964181fe8d271a2e32.dir
-      size: 115372502
-      nfiles: 5
+      path: download/
+      size: 387304699
