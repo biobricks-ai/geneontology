@@ -3,11 +3,11 @@ stages:
   build:
     cmd: Rscript R/build.R
     outs:
-    - path: data/
+    - path: brick/
       hash: md5
-      md5: 69fd1b5228b36a5d39246988ee79a423.dir
-      size: 67873189
-      nfiles: 4
+      md5: f217cf7509fbe1d1f3dc91d2b3831e44.dir
+      size: 115130554
+      nfiles: 5
   download:
     cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 
       http://current.geneontology.org/ --restrict-file-names=windows 
