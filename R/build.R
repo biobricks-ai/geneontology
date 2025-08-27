@@ -7,20 +7,21 @@ library(dplyr)
 library(rdflib)
 library(tidyr)
 library(readr)
+library(digest)
 
 download_dir <- "download"
-data_dir <- "brick"
+brick_dir <- "brick"
 mkdir = function (dir) {
   if (!dir.exists(dir)) {
     dir.create(dir,recursive=TRUE)
   } 
 }
-map(data_dir,mkdir)
+map(brick_dir,mkdir)
 
 ##----------Generate n-triples and parquet data from Gene Ontology rdf data
 parse_triples<-function(inputRdfFile){
-  tmp_file=file.path(data_dir,paste0(str_replace(basename(inputRdfFile),'.owl',"_ntriples.txt")))
-  output_file=file.path(data_dir,paste0(basename(inputRdfFile),"_ntriples.parquet"))
+  tmp_file=file.path(brick_dir,paste0(str_replace(basename(inputRdfFile),'.owl',"_ntriples.txt")))
+  output_file=file.path(brick_dir,paste0(basename(inputRdfFile),"_ntriples.parquet"))
   if( !file.exists(output_file)){
   parsedRdfTest=rdflib::rdf_parse(inputRdfFile, format="guess")
   print(paste0("Parsing ",basename(inputRdfFile)))
@@ -46,7 +47,7 @@ colNamesAnnotations<-c("DB","DB Object ID","DB Object Symbol","Qualifier","GO ID
 read_go_annotations<-function(x) {read_tsv(x, comment = '!', col_names = colNamesAnnotations) |> mutate(filename=basename(x))}
 writeParquetDf<-function(inputFile, read_func){
   tmpDf<-read_func(inputFile)
-  arrow::write_parquet(tmpDf, file.path(data_dir,paste0(basename(inputFile),".parquet")))
+  arrow::write_parquet(tmpDf, file.path(brick_dir,paste0(basename(inputFile),".parquet")))
   rm(tmpDf)
 }
 combineParquet<-function(inputFileList, outputFileName){
@@ -64,7 +65,7 @@ combineParquet(gafFileList,'brick/goa_human_combined.parquet')
 goExtFiles=list.files("download/current.geneontology.org", pattern = "2go", full.names = TRUE)
 read_go_ext<-function(x) {read_tsv(x, comment = '!', col_names = "Info") |> separate(Info,into = c("ExternalID","GODescription","GOID"), c('>|;')) |> mutate(ExternalID=trimws(ExternalID),GODescription=trimws(GODescription),GOID=trimws(GOID)) |> mutate(filename=basename(x))}
 sapply(goExtFiles, function(x) writeParquetDf(x,read_go_ext))
-goExtFilesList=list.files(data_dir, pattern = '2go.parquet', full.names = TRUE)
+goExtFilesList=list.files(brick_dir, pattern = '2go.parquet', full.names = TRUE)
 combineParquet(goExtFilesList,'brick/go_external_combined.parquet')
 
 ##----------Process GO CAM ttl data
