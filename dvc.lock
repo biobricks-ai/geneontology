@@ -1,21 +1,25 @@
----
 schema: '2.0'
 stages:
   build:
     cmd: Rscript R/build.R
     outs:
-    - md5: 11d4d9bb2658d4964181fe8d271a2e32.dir
-      nfiles: 5
-      path: data/
-      size: 115372502
+    - path: data/
+      hash: md5
+      md5: 69fd1b5228b36a5d39246988ee79a423.dir
+      size: 67873189
+      nfiles: 4
   download:
-    cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 http://current.geneontology.org/
-      --restrict-file-names=windows --convert-links -P download --cut-dirs=3; wget
-      http://current.geneontology.org/ontology/extensions/go-plus.owl https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip
-      -P download;wget -H -r --no-parent -A "*go" http://current.geneontology.org/ontology/external2go/
-      --cut-dirs=2 -P download;
+    cmd: wget -H -r --no-parent -A "*human*gaf.gz" -A "go.owl" --level=2 
+      http://current.geneontology.org/ --restrict-file-names=windows 
+      --convert-links -P download --cut-dirs=3; wget 
+      http://current.geneontology.org/ontology/extensions/go-plus.owl 
+      https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip -P 
+      download;wget -H -r --no-parent -A "*go" 
+      http://current.geneontology.org/ontology/external2go/ --cut-dirs=2 -P 
+      download;
     outs:
-    - md5: 0c43b294e8a265dd68b8371685a9b33a.dir
-      nfiles: 30
-      path: download/
-      size: 387304699
+    - path: download/
+      hash: md5
+      md5: 22223977973e1e151fa07fb0e68253be.dir
+      size: 391527323
+      nfiles: 25

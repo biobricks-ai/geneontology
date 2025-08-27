@@ -1,22 +1,15 @@
 library(R.utils)
 library(purrr)
-library(dvcr)
 library(vroom)
 library(arrow)
-library(tibble)
-library(dplyr)
-library(here)
 library(stringr)
-library(tidyverse)
 library(dplyr)
-library(fs)
-library(purrr)
 library(rdflib)
 library(tidyr)
 library(readr)
 
 download_dir <- "download"
-data_dir <- "data"
+data_dir <- "brick"
 mkdir = function (dir) {
   if (!dir.exists(dir)) {
     dir.create(dir,recursive=TRUE)
@@ -30,7 +23,7 @@ parse_triples<-function(inputRdfFile){
   output_file=file.path(data_dir,paste0(basename(inputRdfFile),"_ntriples.parquet"))
   if( !file.exists(output_file)){
   parsedRdfTest=rdflib::rdf_parse(inputRdfFile, format="guess")
-  print(paste0("Parsing:",basename(inputRdfFile)))
+  print(paste0("Parsing ",basename(inputRdfFile)))
   rdflib::rdf_serialize(parsedRdfTest, tmp_file,format = "ntriples")
   remove(parsedRdfTest)
   dfInput=vroom::vroom(tmp_file, delim = ",", col_names = FALSE)
@@ -64,15 +57,15 @@ combineParquet<-function(inputFileList, outputFileName){
   lapply(inputListEdit, file.remove)
 }  
 sapply(gafFiles, function(x) writeParquetDf(x,read_go_annotations))
-gafFileList=list.files('data', pattern = 'gaf.parquet', full.names = TRUE)
-combineParquet(gafFileList,'data/goa_human_combined.parquet')
+gafFileList=list.files('brick', pattern = 'gaf.parquet', full.names = TRUE)
+combineParquet(gafFileList,'brick/goa_human_combined.parquet')
 
 ##----------Process GO external link files
 goExtFiles=list.files("download/current.geneontology.org", pattern = "2go", full.names = TRUE)
 read_go_ext<-function(x) {read_tsv(x, comment = '!', col_names = "Info") |> separate(Info,into = c("ExternalID","GODescription","GOID"), c('>|;')) |> mutate(ExternalID=trimws(ExternalID),GODescription=trimws(GODescription),GOID=trimws(GOID)) |> mutate(filename=basename(x))}
 sapply(goExtFiles, function(x) writeParquetDf(x,read_go_ext))
 goExtFilesList=list.files(data_dir, pattern = '2go.parquet', full.names = TRUE)
-combineParquet(goExtFilesList,'data/go_external_combined.parquet')
+combineParquet(goExtFilesList,'brick/go_external_combined.parquet')
 
 ##----------Process GO CAM ttl data
 fileTarget=list.files('download', pattern = 'zip',full.names = TRUE)

@@ -6,4 +6,4 @@ stages:
   build:
     cmd: Rscript R/build.R
     outs:
-      - data/
+      - brick/
