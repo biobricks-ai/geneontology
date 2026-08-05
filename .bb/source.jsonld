@@ -1,0 +1,46 @@
+{
+  "@context": "../../context/source.context.jsonld",
+  "@type": "dcat:Dataset",
+  "@id": "https://biobricks.ai/bricks/geneontology",
+  "dcterms:title": "The Gene Ontology (GO) Knowledgebase",
+  "dcterms:description": "A BioBricks packaging of the Gene Ontology (GO) knowledgebase. The DVC download stage retrieves the ontology (go.owl, go-plus.owl), human GO annotation files (*human*gaf.gz), the GO-CAM models (GO-CAMs.ttl.zip from the geneontology-public S3 bucket) and the external2go cross-reference mappings, all from http://current.geneontology.org/. R/build.R packages these into the brick. GO is the world's largest source of structured information on gene function, produced by the Gene Ontology Consortium.",
+  "dcterms:license": "https://creativecommons.org/licenses/by/4.0/",
+  "biobricks:licenseName": "CC BY 4.0",
+  "biobricks:licenseClass": "attribution",
+  "biobricks:merckCommercialUse": "permitted",
+  "biobricks:licenseEvidence": [
+    {
+      "source": "http://geneontology.org/docs/go-citation-policy/",
+      "quote": "Gene Ontology Consortium data ... is licensed under the Creative Commons Attribution 4.0 Unported License. Recommended attribution: 'Gene Ontology data from the [release date] ([DOI]) is made available under the terms of the CC BY 4.0 license.'",
+      "confidence": "high"
+    },
+    {
+      "source": "dvc.yaml",
+      "quote": "wget -H -r --no-parent -A \"*human*gaf.gz\" -A \"go.owl\" --level=2 http://current.geneontology.org/ ... wget http://current.geneontology.org/ontology/extensions/go-plus.owl https://s3.amazonaws.com/geneontology-public/gocam/GO-CAMs.ttl.zip",
+      "confidence": "high"
+    }
+  ],
+  "biobricks:reviewed": false,
+  "biobricks:reviewNotes": "Determined by BioBricks licensing-provenance annotation agent. The brick's .bb/brick.jsonld carries no dcterms:license. dvc.yaml shows the upstream is the Gene Ontology (current.geneontology.org). The Gene Ontology citation/license policy page explicitly states GO Consortium data is licensed under CC BY 4.0. CC BY 4.0 permits commercial use and redistribution with attribution, so licenseClass=attribution and merckCommercialUse=permitted. HUMAN REVIEW: preserve CC BY attribution to the Gene Ontology Consortium (release DOI) on redistribution. Note some included resources (GO-CAMs) come from the geneontology-public S3 bucket but are covered by the same GO CC BY 4.0 policy.",
+  "dcterms:creator": "Gene Ontology Consortium",
+  "dcterms:publisher": "Gene Ontology Consortium",
+  "prov:wasDerivedFrom": [
+    {
+      "@type": "dcat:Dataset",
+      "@id": "http://current.geneontology.org/",
+      "dcterms:title": "The Gene Ontology (GO) Knowledgebase current release",
+      "dcterms:license": "https://creativecommons.org/licenses/by/4.0/",
+      "dcat:downloadURL": "http://current.geneontology.org/",
+      "dcat:landingPage": "http://geneontology.org/",
+      "dcterms:publisher": "Gene Ontology Consortium"
+    }
+  ],
+  "prov:wasGeneratedBy": {
+    "@type": "prov:Activity",
+    "prov:wasAssociatedWith": "BioBricks licensing-provenance annotation agent",
+    "prov:endedAtTime": {
+      "@type": "xsd:dateTime",
+      "@value": "2026-08-05T00:00:00Z"
+    }
+  }
+}
